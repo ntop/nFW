@@ -8,7 +8,8 @@ Installation from Packages
 
 Pre-built packages for many Linux distributions are available in the repository.
 
-Installation instructions can be found at http://packages.ntop.org/. 
+1. Install the repository by following instructions at http://packages.ntop.org/
+2. Install the **nfw** package.
 
 License Installation
 --------------------
