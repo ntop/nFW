@@ -1,10 +1,12 @@
 nFW Documentation
 =================
 
-nFW (ntop Firewall) is a netfilter-based Layer-7 packet filtering and Deep Packet Inspection (DPI) application that integrates with ntopng. It uses Linux netfilter queues to intercept packets, performs protocol detection using nDPI, applies policy rules, and exports flow information for monitoring and policy management.
-
 .. image:: img/nfw-logo.png
    :alt: nFW
+   :width: 200px
+   :align: left
+
+nFW (ntop Firewall) is a netfilter-based Layer-7 packet filtering and Deep Packet Inspection (DPI) application that integrates with ntopng. It uses Linux netfilter queues to intercept packets, performs protocol detection using nDPI, applies policy rules, and exports flow information for monitoring and policy management.
 
 .. toctree::
    :maxdepth: 2
