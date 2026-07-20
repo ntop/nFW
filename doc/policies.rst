@@ -1,12 +1,12 @@
 Policy Rules
 ============
 
-nFW uses JSON-based policy rules to define traffic filtering behavior. Policies can be loaded from files or dynamically updated via ntopng. This section explains the policy format and provides examples for common use cases.
+nEdge Lite uses JSON-based policy rules to define traffic filtering behavior. Policies can be loaded from files or dynamically updated via ntopng. This section explains the policy format and provides examples for common use cases.
 
 Policy Architecture
 -------------------
 
-nFW policies consist of two main components:
+nEdge Lite policies consist of two main components:
 
 1. **Pools**: Define groups of IP addresses and MAC addresses
 2. **Policies**: Define filtering rules applied to pools
@@ -208,7 +208,7 @@ To see all supported protocols:
 
 .. code-block:: console
 
-   nfw -H
+   nedgelite -H
 
 Categories
 ~~~~~~~~~~
@@ -591,13 +591,13 @@ Load policies from a file:
 
 .. code-block:: console
 
-   sudo nfw -q 0 -r /etc/nfw/policy.json
+   sudo nedgelite -q 0 -r /etc/nedgelite/policy.json
 
 Reload policies without restarting:
 
 .. code-block:: console
 
-   sudo kill -HUP $(pidof nfw)
+   sudo kill -HUP $(pidof nedgelite)
 
 Dynamic Policies (ntopng-Based)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -606,7 +606,7 @@ Receive policies from ntopng:
 
 .. code-block:: console
 
-   sudo nfw -q 0 -p tcp://ntopng-server:5557
+   sudo nedgelite -q 0 -p tcp://ntopng-server:5557
 
 Policies are automatically updated when changed in ntopng's web interface.
 
@@ -616,11 +616,11 @@ Testing Policies
 Verify Policy Application
 ~~~~~~~~~~~~~~~~~~~~~~~~~
 
-1. **Start nFW with verbose logging**:
+1. **Start nEdge Lite with verbose logging**:
 
    .. code-block:: console
 
-      sudo nfw -q 0 -r /etc/nfw/policy.json -v
+      sudo nedgelite -q 0 -r /etc/nedgelite/policy.json -v
 
 2. **Generate test traffic**:
 
@@ -652,7 +652,7 @@ If a policy isn't working as expected:
 
 1. **Verify protocol detection**:
 
-   Check nFW logs to see which protocol was detected.
+   Check nEdge Lite logs to see which protocol was detected.
 
 2. **Check pool membership**:
 

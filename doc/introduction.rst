@@ -1,12 +1,12 @@
 Introduction
 ============
 
-What is nFW?
-------------
+What is nEdge Lite?
+--------------------
 
-nFW (ntop Firewall) is a high-performance, netfilter-based packet filtering and Deep Packet Inspection (DPI) application designed for Linux systems. It provides Layer-7 (application-level) traffic control by inspecting packet contents and applying sophisticated filtering policies based on protocols, applications, geographic locations, and other advanced criteria.
+nEdge Lite is a high-performance, netfilter-based packet filtering and Deep Packet Inspection (DPI) application designed for Linux systems. It provides Layer-7 (application-level) traffic control by inspecting packet contents and applying sophisticated filtering policies based on protocols, applications, geographic locations, and other advanced criteria.
 
-nFW integrates seamlessly with `ntopng <https://www.ntop.org/products/traffic-analysis/ntop/>`_, enabling centralized monitoring, policy management, and real-time traffic analytics.
+nEdge Lite integrates seamlessly with `ntopng <https://www.ntop.org/products/traffic-analysis/ntop/>`_, enabling centralized monitoring, policy management, and real-time traffic analytics.
 
 Key Features
 ------------
@@ -57,7 +57,7 @@ Flexible Deployment
 
 - **Bridge Mode**: Transparent deployment between network segments without IP configuration
 - **Single Interface Mode**: Protects traffic on a single network interface
-- **Multi-Instance Support**: Run multiple nFW instances on different hosts, all reporting to the same ntopng
+- **Multi-Instance Support**: Run multiple nEdge Lite instances on different hosts, all reporting to the same ntopng
 
 Use Cases
 ---------
@@ -65,7 +65,7 @@ Use Cases
 Enterprise Network Security
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Deploy nFW to enforce corporate acceptable use policies, blocking unauthorized applications and protocols while allowing business-critical traffic. Monitor and control:
+Deploy nEdge Lite to enforce corporate acceptable use policies, blocking unauthorized applications and protocols while allowing business-critical traffic. Monitor and control:
 
 - Social media and entertainment sites
 - Peer-to-peer file sharing
@@ -75,7 +75,7 @@ Deploy nFW to enforce corporate acceptable use policies, blocking unauthorized a
 Network Segmentation
 ~~~~~~~~~~~~~~~~~~~~
 
-Use nFW to implement micro-segmentation in data centers and cloud environments:
+Use nEdge Lite to implement micro-segmentation in data centers and cloud environments:
 
 - Control East-West traffic between VLANs or subnets
 - Enforce application-level policies between security zones
@@ -94,7 +94,7 @@ Organizations can enforce geographic access controls:
 Educational Institutions
 ~~~~~~~~~~~~~~~~~~~~~~~~
 
-Schools and universities can use nFW to:
+Schools and universities can use nEdge Lite to:
 
 - Protect students from inappropriate content
 - Prevent bandwidth abuse from streaming and gaming
@@ -104,12 +104,12 @@ Schools and universities can use nFW to:
 How It Works
 ------------
 
-nFW operates as a userspace application that receives packets from the Linux kernel via netfilter's NFQUEUE mechanism:
+nEdge Lite operates as a userspace application that receives packets from the Linux kernel via netfilter's NFQUEUE mechanism:
 
 1. **Packet Interception**: iptables rules route packets to an NFQUEUE for inspection
-2. **Flow Tracking**: nFW maintains a hash table of active network flows (5-tuple: protocol, source IP, source port, destination IP, destination port)
+2. **Flow Tracking**: nEdge Lite maintains a hash table of active network flows (5-tuple: protocol, source IP, source port, destination IP, destination port)
 3. **DPI Processing**: Each packet is processed through nDPI for protocol detection
-4. **Policy Evaluation**: Once a protocol is detected, nFW applies the configured policy rules
+4. **Policy Evaluation**: Once a protocol is detected, nEdge Lite applies the configured policy rules
 5. **Connection Marking**: The verdict (pass/drop) is applied to the connection using CONNMARK
 6. **Packet Verdict**: The packet is returned to the kernel with an accept or drop verdict
 7. **Flow Export**: Flow metadata is periodically exported to ntopng via ZeroMQ
@@ -120,4 +120,4 @@ This architecture ensures that packets are inspected efficiently with minimal la
 Getting Started
 ---------------
 
-Ready to deploy nFW? Continue to the :doc:`install` section to set up your system, or jump to the :doc:`quick_start` guide for a hands-on introduction.
+Ready to deploy nEdge Lite? Continue to the :doc:`install` section to set up your system, or jump to the :doc:`quick_start` guide for a hands-on introduction.

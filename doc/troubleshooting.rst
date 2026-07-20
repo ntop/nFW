@@ -1,7 +1,7 @@
 Troubleshooting
 ===============
 
-This section provides solutions to common issues encountered when deploying and operating nFW.
+This section provides solutions to common issues encountered when deploying and operating nEdge Lite.
 
 Startup Issues
 --------------
@@ -16,13 +16,13 @@ License Validation Failed
 .. code-block:: console
 
    # Check license file location
-   ls -la nfw.license /etc/nfw.license
+   ls -la nedgelite.license /etc/nedgelite.license
 
    # Verify license validity
-   nfw --check-license
+   nedgelite --check-license
 
    # Display system ID for license generation
-   nfw --show-system-id
+   nedgelite --show-system-id
 
    # Contact ntop.org for valid license
 
@@ -37,9 +37,9 @@ Unable to Bind to NFQUEUE
 
    .. code-block:: console
 
-      # Check for other nfw instances
-      ps aux | grep nfw
-      sudo killall nfw
+      # Check for other nedgelite instances
+      ps aux | grep nedgelite
+      sudo killall nedgelite
 
       # Check for other applications using the queue
       cat /proc/net/netfilter/nfnetlink_queue
@@ -56,7 +56,7 @@ Unable to Bind to NFQUEUE
    .. code-block:: console
 
       # Must run as root
-      sudo nfw -q 0 -z tcp://127.0.0.1:1234
+      sudo nedgelite -q 0 -z tcp://127.0.0.1:1234
 
 Permission Denied Errors
 ~~~~~~~~~~~~~~~~~~~~~~~~
@@ -68,18 +68,18 @@ Permission Denied Errors
 .. code-block:: console
 
    # Run as root or with sudo
-   sudo nfw -q 0 -z tcp://127.0.0.1:1234
+   sudo nedgelite -q 0 -z tcp://127.0.0.1:1234
 
    # Check capabilities (if using capabilities instead of root)
-   sudo setcap cap_net_admin=eip /usr/local/bin/nfw
+   sudo setcap cap_net_admin=eip /usr/local/bin/nedgelite
 
 Packet Processing Issues
 -------------------------
 
-No Packets Reaching nFW
-~~~~~~~~~~~~~~~~~~~~~~~
+No Packets Reaching nEdge Lite
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-**Problem**: nFW starts but shows no activity
+**Problem**: nEdge Lite starts but shows no activity
 
 **Diagnosis**:
 
@@ -101,16 +101,16 @@ No Packets Reaching nFW
    .. code-block:: console
 
       # Run setup script
-      sudo /usr/share/nfw/scripts/default_setup.sh eth0
+      sudo /usr/share/nedgelite/scripts/default_setup.sh eth0
 
 2. **Wrong queue number**:
 
    .. code-block:: console
 
-      # Ensure iptables queue-num matches nfw -q option
+      # Ensure iptables queue-num matches nedgelite -q option
       sudo iptables -t mangle -L -n -v | grep NFQUEUE
       # Should show: --queue-num 0
-      # Must match: nfw -q 0
+      # Must match: nedgelite -q 0
 
 3. **Packets already marked**:
 
@@ -136,7 +136,7 @@ Packets Dropped Unexpectedly
 .. code-block:: console
 
    # Run with verbose logging
-   sudo nfw -q 0 -r /etc/nfw/policy.json -v
+   sudo nedgelite -q 0 -r /etc/nedgelite/policy.json -v
 
    # Check conntrack marks
    sudo conntrack -L | grep mark=2
@@ -164,7 +164,7 @@ Packets Dropped Unexpectedly
 
 2. **Protocol misdetection**:
 
-   Check nFW logs to see what protocol was detected. nDPI may occasionally misidentify protocols.
+   Check nEdge Lite logs to see what protocol was detected. nDPI may occasionally misidentify protocols.
 
 3. **Default marker is "drop"**:
 
@@ -177,7 +177,7 @@ Packets Dropped Unexpectedly
    .. code-block:: console
 
       # Temporarily use pass-all policy
-      sudo nfw -q 0 -v  # No -r option
+      sudo nedgelite -q 0 -v  # No -r option
 
 High Packet Loss
 ~~~~~~~~~~~~~~~~
@@ -211,7 +211,7 @@ High Packet Loss
       sudo iptables -t mangle -A PREROUTING -m mark --mark 0 \
         -j NFQUEUE --queue-balance 0:3 --queue-cpu-fanout
 
-      sudo nfw -q 0:4 -z tcp://127.0.0.1:1234
+      sudo nedgelite -q 0:4 -z tcp://127.0.0.1:1234
 
 3. **Add queue-bypass**:
 
@@ -220,13 +220,13 @@ High Packet Loss
       sudo iptables -t mangle -A PREROUTING -m mark --mark 0 \
         -j NFQUEUE --queue-num 0 --queue-bypass
 
-   This allows packets to pass if nFW is overloaded or crashes.
+   This allows packets to pass if nEdge Lite is overloaded or crashes.
 
-4. **Optimize nFW performance**:
+4. **Optimize nEdge Lite performance**:
 
    - Reduce flow update interval: ``-u 60``
    - Increase conntrack table size
-   - Pin nFW to dedicated CPU cores
+   - Pin nEdge Lite to dedicated CPU cores
 
 Protocol Detection Issues
 --------------------------
@@ -258,7 +258,7 @@ Protocols Not Being Detected
 
    .. code-block:: console
 
-      nfw -H | grep -i <protocol>
+      nedgelite -H | grep -i <protocol>
 
 3. **Allow more packets for detection**:
 
@@ -309,11 +309,11 @@ Policy Not Applied
 .. code-block:: console
 
    # Check if policy file is being loaded
-   sudo nfw -q 0 -r /etc/nfw/policy.json -v
+   sudo nedgelite -q 0 -r /etc/nedgelite/policy.json -v
    # Look for "Loading policy" messages
 
    # Verify JSON syntax
-   cat /etc/nfw/policy.json | jq .
+   cat /etc/nedgelite/policy.json | jq .
 
 **Solutions**:
 
@@ -322,7 +322,7 @@ Policy Not Applied
    .. code-block:: console
 
       # Validate JSON
-      cat /etc/nfw/policy.json | jq .
+      cat /etc/nedgelite/policy.json | jq .
       # Fix any syntax errors
 
 2. **Pool not matching traffic**:
@@ -342,7 +342,7 @@ Policy Not Applied
 
    .. code-block:: console
 
-      sudo kill -HUP $(pidof nfw)
+      sudo kill -HUP $(pidof nedgelite)
 
 Policy Changes Not Taking Effect
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -355,14 +355,14 @@ Policy Changes Not Taking Effect
 
    .. code-block:: console
 
-      sudo kill -HUP $(pidof nfw)
+      sudo kill -HUP $(pidof nedgelite)
 
-2. **Restart nFW**:
+2. **Restart nEdge Lite**:
 
    .. code-block:: console
 
-      sudo killall nfw
-      sudo nfw -q 0 -r /etc/nfw/policy.json -z tcp://127.0.0.1:1234
+      sudo killall nedgelite
+      sudo nedgelite -q 0 -r /etc/nedgelite/policy.json -z tcp://127.0.0.1:1234
 
 3. **Clear conntrack**:
 
@@ -378,7 +378,7 @@ ntopng Integration Issues
 No Flows Appearing in ntopng
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-**Problem**: nFW is running but ntopng shows no flows
+**Problem**: nEdge Lite is running but ntopng shows no flows
 
 **Diagnosis**:
 
@@ -399,8 +399,8 @@ No Flows Appearing in ntopng
       # ntopng must have trailing 'c'
       sudo ntopng -i tcp://127.0.0.1:1234c
 
-      # nFW must NOT have trailing 'c'
-      sudo nfw -q 0 -z tcp://127.0.0.1:1234
+      # nEdge Lite must NOT have trailing 'c'
+      sudo nedgelite -q 0 -z tcp://127.0.0.1:1234
 
 2. **Firewall blocking ZMQ**:
 
@@ -419,7 +419,7 @@ No Flows Appearing in ntopng
 ZMQ Connection Refused
 ~~~~~~~~~~~~~~~~~~~~~~~
 
-**Problem**: ``Connection refused`` when nFW tries to connect to ntopng
+**Problem**: ``Connection refused`` when nEdge Lite tries to connect to ntopng
 
 **Solutions**:
 
@@ -438,12 +438,12 @@ ZMQ Connection Refused
 3. **Verify endpoint address**:
 
    - Use ``0.0.0.0`` on ntopng to listen on all interfaces
-   - Use correct IP address in nFW ``-z`` option
+   - Use correct IP address in nEdge Lite ``-z`` option
 
 Policy Updates from ntopng Not Working
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-**Problem**: Changes in ntopng GUI don't affect nFW
+**Problem**: Changes in ntopng GUI don't affect nEdge Lite
 
 **Solutions**:
 
@@ -454,8 +454,8 @@ Policy Updates from ntopng Not Working
       # ntopng must publish events
       sudo ntopng -i tcp://0.0.0.0:5556c --zmq-publish-events tcp://0.0.0.0:5557
 
-      # nFW must subscribe
-      sudo nfw -q 0 -z tcp://ntopng:5556 -p tcp://ntopng:5557
+      # nEdge Lite must subscribe
+      sudo nedgelite -q 0 -z tcp://ntopng:5556 -p tcp://ntopng:5557
 
 2. **Check ZMQ policy connection**:
 
@@ -467,8 +467,8 @@ Policy Updates from ntopng Not Working
 
    .. code-block:: console
 
-      sudo killall ntopng nfw
-      # Start ntopng first, then nFW
+      sudo killall ntopng nedgelite
+      # Start ntopng first, then nEdge Lite
 
 Performance Issues
 ------------------
@@ -476,7 +476,7 @@ Performance Issues
 High CPU Usage
 ~~~~~~~~~~~~~~
 
-**Problem**: nFW consuming excessive CPU
+**Problem**: nEdge Lite consuming excessive CPU
 
 **Causes**:
 
@@ -490,13 +490,13 @@ High CPU Usage
 
    .. code-block:: console
 
-      sudo nfw -q 0:$(nproc) -z tcp://127.0.0.1:1234
+      sudo nedgelite -q 0:$(nproc) -z tcp://127.0.0.1:1234
 
 2. **Reduce flow update frequency**:
 
    .. code-block:: console
 
-      sudo nfw -q 0 -z tcp://127.0.0.1:1234 -u 60
+      sudo nedgelite -q 0 -z tcp://127.0.0.1:1234 -u 60
 
 3. **Optimize policies**:
 
@@ -513,15 +513,15 @@ High CPU Usage
 High Memory Usage
 ~~~~~~~~~~~~~~~~~
 
-**Problem**: nFW memory usage growing over time
+**Problem**: nEdge Lite memory usage growing over time
 
 **Diagnosis**:
 
 .. code-block:: console
 
    # Monitor memory
-   ps aux | grep nfw
-   pmap $(pidof nfw)
+   ps aux | grep nedgelite
+   pmap $(pidof nedgelite)
 
 **Causes**:
 
@@ -547,20 +547,20 @@ High Memory Usage
 Network Latency
 ~~~~~~~~~~~~~~~
 
-**Problem**: Increased latency when nFW is running
+**Problem**: Increased latency when nEdge Lite is running
 
 **Solutions**:
 
 1. **Optimize queue processing**:
 
    - Use ``--queue-cpu-fanout`` in iptables
-   - Pin nFW to dedicated cores
+   - Pin nEdge Lite to dedicated cores
 
 2. **Disable flow batching**:
 
    .. code-block:: console
 
-      sudo nfw -q 0 -z tcp://127.0.0.1:1234 -f
+      sudo nedgelite -q 0 -z tcp://127.0.0.1:1234 -f
 
 3. **Check queue depth**:
 
@@ -613,7 +613,7 @@ Conntrack Table Full
 Out of Memory
 ~~~~~~~~~~~~~
 
-**Problem**: Kernel OOM killer terminates nFW
+**Problem**: Kernel OOM killer terminates nEdge Lite
 
 **Solutions**:
 
@@ -621,12 +621,12 @@ Out of Memory
 
 2. **Reduce flow count**: Implement aggressive timeout policies
 
-3. **Limit nFW memory**:
+3. **Limit nEdge Lite memory**:
 
    .. code-block:: console
 
       # Use systemd to limit memory
-      sudo systemctl set-property nfw.service MemoryMax=1G
+      sudo systemctl set-property nedgelite.service MemoryMax=1G
 
 Debugging Techniques
 --------------------
@@ -636,7 +636,7 @@ Verbose Logging
 
 .. code-block:: console
 
-   sudo nfw -q 0 -r /etc/nfw/policy.json -z tcp://127.0.0.1:1234 -v
+   sudo nedgelite -q 0 -r /etc/nedgelite/policy.json -z tcp://127.0.0.1:1234 -v
 
 Packet Capture
 ~~~~~~~~~~~~~~
@@ -681,10 +681,10 @@ System Logs
 .. code-block:: console
 
    # Check kernel messages
-   sudo dmesg | grep -i "nf_queue\|conntrack\|nfw"
+   sudo dmesg | grep -i "nf_queue\|conntrack\|nedgelite"
 
    # Check system logs
-   sudo journalctl -u nfw -f  # If running as systemd service
+   sudo journalctl -u nedgelite -f  # If running as systemd service
 
 Getting Help
 ------------
@@ -701,23 +701,23 @@ If you cannot resolve an issue:
 
       # System info
       uname -a
-      nfw --version
+      nedgelite --version
       ntopng --version
 
       # Configuration
       iptables -t mangle -L -n -v
-      cat /etc/nfw/policy.json
-      ps aux | grep nfw
+      cat /etc/nedgelite/policy.json
+      ps aux | grep nedgelite
 
       # Statistics
       conntrack -S
       cat /proc/net/netfilter/nfnetlink_queue
 
-4. **Report Bug**: https://github.com/ntop/nFW/issues
+4. **Report Bug**: https://github.com/ntop/nEdge Lite/issues
 
 Include:
 
-- nFW version
+- nEdge Lite version
 - Operating system and kernel version
 - Configuration files
 - Log output with ``-v`` flag

@@ -1,7 +1,7 @@
 License Management
 ==================
 
-nFW is commercial software that requires a valid license to operate. This section explains how to obtain, install, and manage your nFW license.
+nEdge Lite is commercial software that requires a valid license to operate. This section explains how to obtain, install, and manage your nEdge Lite license.
 
 License Overview
 ----------------
@@ -9,7 +9,7 @@ License Overview
 Types of Licenses
 ~~~~~~~~~~~~~~~~~
 
-nFW licenses are issued by ntop.org and come in different types:
+nEdge Lite licenses are issued by ntop.org and come in different types:
 
 1. **Evaluation License**: Time-limited license for testing and evaluation
 2. **Commercial License**: Full license for production use
@@ -32,13 +32,13 @@ Obtaining a License
 Step 1: Get System ID
 ~~~~~~~~~~~~~~~~~~~~~~
 
-Run nFW with the ``--show-system-id`` option:
+Run nEdge Lite with the ``--show-system-id`` option:
 
 .. code-block:: console
 
-   nfw --show-system-id
+   nedgelite --show-system-id
 
-**Important**: The System ID is derived from hardware identifiers and must match the system where nFW will run.
+**Important**: The System ID is derived from hardware identifiers and must match the system where nEdge Lite will run.
 
 Step 2: Request License
 ~~~~~~~~~~~~~~~~~~~~~~~~
@@ -56,7 +56,7 @@ Contact ntop.org to purchase a license:
 Step 3: Receive License File
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-ntop.org will provide a ``nfw.license`` file tied to your System ID.
+ntop.org will provide a ``nedgelite.license`` file tied to your System ID.
 
 Installing a License
 --------------------
@@ -64,10 +64,10 @@ Installing a License
 License File Locations
 ~~~~~~~~~~~~~~~~~~~~~~
 
-nFW searches for the license file in the following locations (in order):
+nEdge Lite searches for the license file in the following locations (in order):
 
-1. ``./nfw.license`` (current directory)
-2. ``/etc/nfw.license`` (system-wide)
+1. ``./nedgelite.license`` (current directory)
+2. ``/etc/nedgelite.license`` (system-wide)
 
 Recommended Installation
 ~~~~~~~~~~~~~~~~~~~~~~~~
@@ -77,11 +77,11 @@ Install the license system-wide:
 .. code-block:: console
 
    # Copy license file
-   sudo cp nfw.license /etc/nfw.license
+   sudo cp nedgelite.license /etc/nedgelite.license
 
    # Set appropriate permissions
-   sudo chmod 644 /etc/nfw.license
-   sudo chown root:root /etc/nfw.license
+   sudo chmod 644 /etc/nedgelite.license
+   sudo chown root:root /etc/nedgelite.license
 
 Verifying Installation
 ~~~~~~~~~~~~~~~~~~~~~~
@@ -90,7 +90,7 @@ Check that the license is valid:
 
 .. code-block:: console
 
-   nfw --check-license
+   nedgelite --check-license
 
 Expected output:
 
@@ -119,13 +119,13 @@ Checking License Status
 
 .. code-block:: console
 
-   nfw --check-license
+   nedgelite --check-license
 
 **Check Maintenance Status**:
 
 .. code-block:: console
 
-   nfw --check-maintenance
+   nedgelite --check-maintenance
 
 Output:
 
@@ -138,18 +138,18 @@ Output:
 
 .. code-block:: console
 
-   nfw --show-system-id
+   nedgelite --show-system-id
 
 Validation at Startup
 ~~~~~~~~~~~~~~~~~~~~~~
 
-When nFW starts, it automatically validates the license:
+When nEdge Lite starts, it automatically validates the license:
 
 .. code-block:: console
 
-   sudo nfw -q 0 -z tcp://127.0.0.1:1234
+   sudo nedgelite -q 0 -z tcp://127.0.0.1:1234
 
-If the license is invalid, nFW will not start:
+If the license is invalid, nEdge Lite will not start:
 
 .. code-block:: text
 
@@ -163,7 +163,7 @@ License Expiration
 Grace Period
 ~~~~~~~~~~~~
 
-Some licenses may include a grace period after expiration, allowing nFW to continue running with warnings.
+Some licenses may include a grace period after expiration, allowing nEdge Lite to continue running with warnings.
 
 Renewal
 ~~~~~~~
@@ -173,14 +173,14 @@ To renew an expired license:
 1. Contact ntop.org sales team
 2. Provide your current System ID
 3. Receive updated license file
-4. Replace ``/etc/nfw.license`` with the new file
-5. Restart nFW (if running)
+4. Replace ``/etc/nedgelite.license`` with the new file
+5. Restart nEdge Lite (if running)
 
 .. code-block:: console
 
-   sudo cp nfw-new.license /etc/nfw.license
-   sudo killall nfw
-   sudo nfw -q 0 -z tcp://127.0.0.1:1234
+   sudo cp nedgelite-new.license /etc/nedgelite.license
+   sudo killall nedgelite
+   sudo nedgelite -q 0 -z tcp://127.0.0.1:1234
 
 Maintenance Expiration
 ----------------------
@@ -200,7 +200,7 @@ After Maintenance Expires
 
 When maintenance expires:
 
-- nFW continues to operate normally
+- nEdge Lite continues to operate normally
 - New updates and features are not available
 - Technical support may be limited
 - nDPI protocol database becomes outdated
@@ -222,13 +222,13 @@ License File Not Found
 .. code-block:: console
 
    # Check if license file exists
-   ls -la nfw.license /etc/nfw.license
+   ls -la nedgelite.license /etc/nedgelite.license
 
    # If missing, copy license to correct location
-   sudo cp nfw.license /etc/nfw.license
+   sudo cp nedgelite.license /etc/nedgelite.license
 
    # Verify permissions
-   sudo chmod 644 /etc/nfw.license
+   sudo chmod 644 /etc/nedgelite.license
 
 Invalid License
 ~~~~~~~~~~~~~~~
@@ -260,7 +260,7 @@ System ID Mismatch
 
    .. code-block:: console
 
-      nfw --show-system-id
+      nedgelite --show-system-id
 
 2. **Contact ntop.org**: Request license transfer or update for new hardware
 
@@ -276,21 +276,21 @@ License Expired
 .. code-block:: console
 
    # Check expiration date
-   nfw --check-license
+   nedgelite --check-license
 
 Maintenance Expired
 ~~~~~~~~~~~~~~~~~~~
 
 **Error**: ``Maintenance expired on YYYY-MM-DD``
 
-**Impact**: nFW continues to run, but updates and support are unavailable
+**Impact**: nEdge Lite continues to run, but updates and support are unavailable
 
 **Solution**: Renew maintenance with ntop.org
 
 .. code-block:: console
 
    # Check maintenance status
-   nfw --check-maintenance
+   nedgelite --check-maintenance
 
 License for Virtual Machines
 -----------------------------
@@ -323,7 +323,7 @@ It's recommended to keep backup copies of your license:
 .. code-block:: console
 
    # Backup license file
-   sudo cp /etc/nfw.license ~/nfw.license.backup
+   sudo cp /etc/nedgelite.license ~/nedgelite.license.backup
 
    # Store in version control or secure location
    # IMPORTANT: Do not share license files publicly
@@ -333,7 +333,7 @@ It's recommended to keep backup copies of your license:
 Moving License to New Hardware
 -------------------------------
 
-If you need to move nFW to new hardware:
+If you need to move nEdge Lite to new hardware:
 
 Step 1: Get New System ID
 ~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -342,7 +342,7 @@ On the new system:
 
 .. code-block:: console
 
-   nfw --show-system-id
+   nedgelite --show-system-id
 
 Step 2: Contact ntop.org
 ~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -360,8 +360,8 @@ Once received:
 
 .. code-block:: console
 
-   sudo cp nfw-new.license /etc/nfw.license
-   nfw --check-license
+   sudo cp nedgelite-new.license /etc/nedgelite.license
+   nedgelite --check-license
 
 License Compliance
 ------------------
@@ -369,7 +369,7 @@ License Compliance
 Terms of Use
 ~~~~~~~~~~~~
 
-nFW licenses typically include:
+nEdge Lite licenses typically include:
 
 - **Single System**: License is valid for one system only
 - **No Redistribution**: License files cannot be shared or redistributed
@@ -399,26 +399,26 @@ What happens if my hardware fails?
 
 Contact ntop.org to transfer your license to replacement hardware. Provide both old and new System IDs.
 
-Can I run nFW without a license for testing?
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Can I run nEdge Lite without a license for testing?
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-nFW requires a valid license. Contact ntop.org for an evaluation license for testing purposes.
+nEdge Lite requires a valid license. Contact ntop.org for an evaluation license for testing purposes.
 
 How long is the license valid?
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-License validity periods vary. Check with ``nfw --check-license`` or review your license agreement.
+License validity periods vary. Check with ``nedgelite --check-license`` or review your license agreement.
 
 What's the difference between license and maintenance expiration?
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-- **License Expiration**: nFW stops working
-- **Maintenance Expiration**: nFW continues working, but no updates or support
+- **License Expiration**: nEdge Lite stops working
+- **Maintenance Expiration**: nEdge Lite continues working, but no updates or support
 
-Do I need a new license for nFW updates?
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Do I need a new license for nEdge Lite updates?
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-No. Your license remains valid for all nFW versions during your maintenance period.
+No. Your license remains valid for all nEdge Lite versions during your maintenance period.
 
 Can I transfer my license to a virtual machine?
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -440,7 +440,7 @@ When contacting support, please provide:
 - System ID
 - License file name
 - Error messages
-- Output of ``nfw --check-license``
+- Output of ``nedgelite --check-license``
 
 Next Steps
 ----------

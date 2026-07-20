@@ -1,7 +1,7 @@
 Installation
 ============
 
-This section provides detailed instructions for installing nFW on your Linux system.
+This section provides detailed instructions for installing nEdge Lite on your Linux system.
 
 Installation from Packages
 ---------------------------
@@ -9,15 +9,15 @@ Installation from Packages
 Pre-built packages for many Linux distributions are available in the repository.
 
 1. Install the repository by following instructions at http://packages.ntop.org/
-2. Install the **nfw** package.
+2. Install the **nedgelite** package.
 
 License Installation
 --------------------
 
-nFW requires a valid license file to operate. The license file should be placed in one of these locations:
+nEdge Lite requires a valid license file to operate. The license file should be placed in one of these locations:
 
-- ``nfw.license`` (current directory)
-- ``/etc/nfw.license`` (system-wide)
+- ``nedgelite.license`` (current directory)
+- ``/etc/nedgelite.license`` (system-wide)
 
 License Management Commands
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -25,30 +25,30 @@ License Management Commands
 .. code-block:: console
 
    # Verify installation
-   nfw --version
+   nedgelite --version
 
    # Display system ID for license generation
-   nfw --show-system-id
+   nedgelite --show-system-id
 
    # Check license validity
-   nfw --check-license
+   nedgelite --check-license
 
    # Check maintenance status
-   nfw --check-maintenance
+   nedgelite --check-maintenance
 
 Contact ntop.org or visit http://shop.ntop.org/ to obtain a commercial license.
 
 Post-Installation Steps
 -----------------------
 
-After installing nFW, perform these configuration steps:
+After installing nEdge Lite, perform these configuration steps:
 
 1. **Verify Installation**
 
    .. code-block:: console
 
-      nfw --version
-      nfw --help
+      nedgelite --version
+      nedgelite --help
 
 2. **Configure Netfilter**
 
@@ -57,10 +57,10 @@ After installing nFW, perform these configuration steps:
    .. code-block:: console
 
       # For bridge mode
-      sudo /usr/share/nfw/scripts/bridge_setup.sh lan0 wan0
+      sudo /usr/share/nedgelite/scripts/bridge_setup.sh lan0 wan0
 
       # For single interface mode
-      sudo /usr/share/nfw/scripts/default_setup.sh eth0
+      sudo /usr/share/nedgelite/scripts/default_setup.sh eth0
 
 3. **Install License**
 
@@ -68,18 +68,18 @@ After installing nFW, perform these configuration steps:
 
    .. code-block:: console
 
-      sudo cp nfw.license /etc/nfw.license
-      nfw --check-license
+      sudo cp nedgelite.license /etc/nedgelite.license
+      nedgelite --check-license
 
 4. **Test Basic Operation**
 
-   Run nFW with minimal configuration:
+   Run nEdge Lite with minimal configuration:
 
    .. code-block:: console
 
-      sudo nfw -q 0 -v
+      sudo nedgelite -q 0 -v
 
-   Press Ctrl+C to stop. You should see nFW start successfully.
+   Press Ctrl+C to stop. You should see nEdge Lite start successfully.
 
 Next Steps
 ----------
@@ -95,20 +95,20 @@ Uninstallation
 
 .. code-block:: console
 
-   sudo apt-get remove nfw
-   sudo apt-get purge nfw  # Also remove configuration files
+   sudo apt-get remove nedgelite
+   sudo apt-get purge nedgelite  # Also remove configuration files
 
 **CentOS/Rocky:**
 
 .. code-block:: console
 
-   sudo yum remove nfw
+   sudo yum remove nedgelite
 
 Remove Configuration
 ~~~~~~~~~~~~~~~~~~~~
 
 .. code-block:: console
 
-   sudo rm -rf /etc/nfw
-   sudo rm -f /etc/nfw.license
+   sudo rm -rf /etc/nedgelite
+   sudo rm -f /etc/nedgelite.license
 

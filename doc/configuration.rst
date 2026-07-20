@@ -1,7 +1,7 @@
 Configuration
 =============
 
-This section covers all configuration options available in nFW, including command-line arguments, environment variables, and runtime behavior.
+This section covers all configuration options available in nEdge Lite, including command-line arguments, environment variables, and runtime behavior.
 
 Command-Line Options
 --------------------
@@ -23,13 +23,13 @@ The number of queues determines thread count. Each queue is handled by a separat
 .. code-block:: console
 
    # Single queue
-   sudo nfw -q 0
+   sudo nedgelite -q 0
 
    # Four queues (0-3) for load balancing
-   sudo nfw -q 0:4
+   sudo nedgelite -q 0:4
 
    # Eight queues starting at queue 10
-   sudo nfw -q 10:8
+   sudo nedgelite -q 10:8
 
 **-v, --verbose**
 
@@ -37,7 +37,7 @@ Enable verbose logging output. Shows detailed information about packet processin
 
 .. code-block:: console
 
-   sudo nfw -q 0 -v
+   sudo nedgelite -q 0 -v
 
 **-h, --help**
 
@@ -45,7 +45,7 @@ Display help message with all available options.
 
 .. code-block:: console
 
-   nfw --help
+   nedgelite --help
 
 **-V, --version**
 
@@ -53,7 +53,7 @@ Display version information.
 
 .. code-block:: console
 
-   nfw --version
+   nedgelite --version
 
 **-H**
 
@@ -61,7 +61,7 @@ Display list of supported nDPI protocols.
 
 .. code-block:: console
 
-   nfw -H
+   nedgelite -H
 
 Policy Options
 ~~~~~~~~~~~~~~
@@ -72,13 +72,13 @@ Load policy rules from a JSON file. The file contains pool definitions and polic
 
 .. code-block:: console
 
-   sudo nfw -q 0 -r /etc/nfw/policy.json
+   sudo nedgelite -q 0 -r /etc/nedgelite/policy.json
 
-When using this option, you can reload policies by sending SIGHUP to the nFW process:
+When using this option, you can reload policies by sending SIGHUP to the nEdge Lite process:
 
 .. code-block:: console
 
-   sudo kill -HUP $(pidof nfw)
+   sudo kill -HUP $(pidof nedgelite)
 
 **-p, --zmq-policy-endpoint <url>**
 
@@ -86,13 +86,13 @@ Subscribe to policy updates from ntopng via ZeroMQ. This enables dynamic policy 
 
 .. code-block:: console
 
-   sudo nfw -q 0 -p tcp://127.0.0.1:5557
+   sudo nedgelite -q 0 -p tcp://127.0.0.1:5557
 
 Multiple endpoints are supported for redundancy:
 
 .. code-block:: console
 
-   sudo nfw -q 0 -p tcp://127.0.0.1:5557 -p tcp://10.0.0.1:5557
+   sudo nedgelite -q 0 -p tcp://127.0.0.1:5557 -p tcp://10.0.0.1:5557
 
 Flow Export Options
 ~~~~~~~~~~~~~~~~~~~
@@ -103,13 +103,13 @@ Send flow data to ntopng via ZeroMQ. This is typically required for monitoring a
 
 .. code-block:: console
 
-   sudo nfw -q 0 -z tcp://127.0.0.1:1234
+   sudo nedgelite -q 0 -z tcp://127.0.0.1:1234
 
 Multiple endpoints are supported to send flows to multiple ntopng instances:
 
 .. code-block:: console
 
-   sudo nfw -q 0 -z tcp://192.168.1.10:1234 -z tcp://192.168.1.20:1234
+   sudo nedgelite -q 0 -z tcp://192.168.1.10:1234 -z tcp://192.168.1.20:1234
 
 **-j, --json**
 
@@ -117,7 +117,7 @@ Export flows in JSON format instead of the default TLV (Type-Length-Value) forma
 
 .. code-block:: console
 
-   sudo nfw -q 0 -z tcp://127.0.0.1:1234 -j
+   sudo nedgelite -q 0 -z tcp://127.0.0.1:1234 -j
 
 **Note**: TLV format is more compact and efficient. Use JSON only if required for debugging or custom integrations.
 
@@ -127,7 +127,7 @@ Flush flows immediately over ZMQ without batching. This reduces latency but may 
 
 .. code-block:: console
 
-   sudo nfw -q 0 -z tcp://127.0.0.1:1234 -f
+   sudo nedgelite -q 0 -z tcp://127.0.0.1:1234 -f
 
 **-u, --flow-update <seconds>**
 
@@ -136,7 +136,7 @@ Set the interval (in seconds) for periodic flow updates. Default is 30 seconds.
 .. code-block:: console
 
    # Update flows every 10 seconds
-   sudo nfw -q 0 -z tcp://127.0.0.1:1234 -u 10
+   sudo nedgelite -q 0 -z tcp://127.0.0.1:1234 -u 10
 
 **Range**: 3-120 seconds
 
@@ -146,14 +146,14 @@ Enable ZeroMQ CURVE encryption for secure flow export. Provide the server's publ
 
 .. code-block:: console
 
-   sudo nfw -q 0 -z tcp://127.0.0.1:1234 -y "server-public-key"
+   sudo nedgelite -q 0 -z tcp://127.0.0.1:1234 -y "server-public-key"
 
 Connection Tracking Options
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 **-s, --skip-ct-reset**
 
-Skip conntrack initialization at startup. By default, nFW:
+Skip conntrack initialization at startup. By default, nEdge Lite:
 
 - Enables conntrack accounting
 - Enables conntrack timestamps
@@ -163,7 +163,7 @@ Use this option if these settings are already configured or managed externally.
 
 .. code-block:: console
 
-   sudo nfw -q 0 -s
+   sudo nedgelite -q 0 -s
 
 License Options
 ~~~~~~~~~~~~~~~
@@ -174,7 +174,7 @@ Display the system ID used for license generation.
 
 .. code-block:: console
 
-   nfw --show-system-id
+   nedgelite --show-system-id
 
 **--check-license**
 
@@ -182,7 +182,7 @@ Check the validity of the installed license.
 
 .. code-block:: console
 
-   nfw --check-license
+   nedgelite --check-license
 
 **--check-maintenance**
 
@@ -190,7 +190,7 @@ Check the maintenance expiration date.
 
 .. code-block:: console
 
-   nfw --check-maintenance
+   nedgelite --check-maintenance
 
 Configuration Files
 -------------------
@@ -200,8 +200,8 @@ License File
 
 **Locations** (checked in order):
 
-1. ``nfw.license`` (current directory)
-2. ``/etc/nfw.license``
+1. ``nedgelite.license`` (current directory)
+2. ``/etc/nedgelite.license``
 
 **Format**: Binary license file provided by ntop.org
 
@@ -212,7 +212,7 @@ Policy File
 
 **Format**: JSON (newline-delimited JSON objects)
 
-**Example**: ``/etc/nfw/policy.json``
+**Example**: ``/etc/nedgelite/policy.json``
 
 See :doc:`policies` for detailed policy file format.
 
@@ -222,15 +222,15 @@ Runtime Configuration
 Signals
 ~~~~~~~
 
-nFW responds to POSIX signals:
+nEdge Lite responds to POSIX signals:
 
 **SIGINT / SIGTERM**
 
-Gracefully shutdown nFW:
+Gracefully shutdown nEdge Lite:
 
 .. code-block:: console
 
-   sudo kill -TERM $(pidof nfw)
+   sudo kill -TERM $(pidof nedgelite)
    # or press Ctrl+C
 
 **SIGHUP**
@@ -239,12 +239,12 @@ Reload policy rules from file (only if ``-r`` option was used):
 
 .. code-block:: console
 
-   sudo kill -HUP $(pidof nfw)
+   sudo kill -HUP $(pidof nedgelite)
 
 System Settings
 ~~~~~~~~~~~~~~~
 
-nFW requires specific kernel settings for optimal operation:
+nEdge Lite requires specific kernel settings for optimal operation:
 
 **Conntrack Accounting**:
 
@@ -289,7 +289,7 @@ Standalone with Static Policy
 
 .. code-block:: console
 
-   sudo nfw -q 0 -r /etc/nfw/policy.json -v
+   sudo nedgelite -q 0 -r /etc/nedgelite/policy.json -v
 
 Integrated with ntopng
 ~~~~~~~~~~~~~~~~~~~~~~~
@@ -299,8 +299,8 @@ Integrated with ntopng
    # On ntopng host
    sudo ntopng -i tcp://0.0.0.0:5556c --zmq-publish-events tcp://0.0.0.0:5557
 
-   # On nFW host
-   sudo nfw -q 0 -z tcp://ntopng-server:5556 -p tcp://ntopng-server:5557
+   # On nEdge Lite host
+   sudo nedgelite -q 0 -z tcp://ntopng-server:5556 -p tcp://ntopng-server:5557
 
 Multi-Queue for Performance
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -308,7 +308,7 @@ Multi-Queue for Performance
 .. code-block:: console
 
    # Configure 8 queues
-   sudo nfw -q 0:8 -z tcp://127.0.0.1:1234 -u 15
+   sudo nedgelite -q 0:8 -z tcp://127.0.0.1:1234 -u 15
 
 Bridge Mode with Policy File
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -316,17 +316,17 @@ Bridge Mode with Policy File
 .. code-block:: console
 
    # Set up bridge
-   sudo /usr/share/nfw/scripts/bridge_setup.sh eth0 eth1
+   sudo /usr/share/nedgelite/scripts/bridge_setup.sh eth0 eth1
 
-   # Start nFW
-   sudo nfw -q 0 -r /etc/nfw/policy.json -z tcp://127.0.0.1:1234
+   # Start nEdge Lite
+   sudo nedgelite -q 0 -r /etc/nedgelite/policy.json -z tcp://127.0.0.1:1234
 
 Multiple ntopng Collectors
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. code-block:: console
 
-   sudo nfw -q 0 \
+   sudo nedgelite -q 0 \
      -z tcp://ntopng1.local:5556 \
      -z tcp://ntopng2.local:5556 \
      -p tcp://ntopng1.local:5557
@@ -336,7 +336,7 @@ Encrypted Flow Export
 
 .. code-block:: console
 
-   sudo nfw -q 0 \
+   sudo nedgelite -q 0 \
      -z tcp://remote-ntopng:5556 \
      -y "Yne@$w-vo<fVvi]a<NY6T1ed:M$fCG*[IaLV{hID" \
      -p tcp://remote-ntopng:5557
@@ -351,24 +351,24 @@ For high-traffic environments:
 .. code-block:: console
 
    # Use one queue per CPU core
-   sudo nfw -q 0:$(nproc) -z tcp://127.0.0.1:1234 -u 10
+   sudo nedgelite -q 0:$(nproc) -z tcp://127.0.0.1:1234 -u 10
 
 **Optimize Flow Updates**:
 
 .. code-block:: console
 
    # Reduce update interval for real-time monitoring
-   sudo nfw -q 0 -z tcp://127.0.0.1:1234 -u 5
+   sudo nedgelite -q 0 -z tcp://127.0.0.1:1234 -u 5
 
    # Increase update interval for high-volume environments
-   sudo nfw -q 0 -z tcp://127.0.0.1:1234 -u 60
+   sudo nedgelite -q 0 -z tcp://127.0.0.1:1234 -u 60
 
 **CPU Affinity**:
 
 .. code-block:: console
 
    # Pin to specific CPU cores
-   sudo taskset -c 0-3 nfw -q 0:4 -z tcp://127.0.0.1:1234
+   sudo taskset -c 0-3 nedgelite -q 0:4 -z tcp://127.0.0.1:1234
 
 Next Steps
 ----------

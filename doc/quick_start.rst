@@ -1,15 +1,15 @@
 Quick Start Guide
 =================
 
-This guide will help you get nFW up and running quickly. We'll cover a basic deployment scenario with ntopng integration.
+This guide will help you get nEdge Lite up and running quickly. We'll cover a basic deployment scenario with ntopng integration.
 
 Prerequisites
 -------------
 
 Before starting, ensure you have:
 
-1. **Installed nFW**: Follow the :doc:`install` guide if you haven't already
-2. **Valid License**: Place your license file at ``/etc/nfw.license``
+1. **Installed nEdge Lite**: Follow the :doc:`install` guide if you haven't already
+2. **Valid License**: Place your license file at ``/etc/nedgelite.license``
 3. **Root Access**: All commands must be run as root or with sudo
 4. **Network Interfaces**: At least one network interface for traffic inspection
 
@@ -25,7 +25,7 @@ Run the setup script for single interface mode:
 
 .. code-block:: console
 
-   sudo /usr/share/nfw/scripts/default_setup.sh eth0
+   sudo /usr/share/nedgelite/scripts/default_setup.sh eth0
 
 Replace ``eth0`` with your actual interface name. This script configures iptables to route packets to NFQUEUE.
 
@@ -47,16 +47,16 @@ On the same host (or a different one), start ntopng with ZMQ collector:
 
 **Important**: Note the trailing ``c`` in the endpoint URL. This tells ntopng to act as a ZMQ collector.
 
-ntopng will listen on port 1234 for flow data from nFW.
+ntopng will listen on port 1234 for flow data from nEdge Lite.
 
-Step 3: Start nFW
-~~~~~~~~~~~~~~~~~~
+Step 3: Start nEdge Lite
+~~~~~~~~~~~~~~~~~~~~~~~~
 
-Start nFW and connect it to ntopng:
+Start nEdge Lite and connect it to ntopng:
 
 .. code-block:: console
 
-   sudo nfw -q 0 -z tcp://127.0.0.1:1234 -v
+   sudo nedgelite -q 0 -z tcp://127.0.0.1:1234 -v
 
 **Command breakdown:**
 
@@ -67,9 +67,9 @@ Start nFW and connect it to ntopng:
 Step 4: Verify Operation
 ~~~~~~~~~~~~~~~~~~~~~~~~~
 
-1. **Check nFW is running:**
+1. **Check nEdge Lite is running:**
 
-   You should see output indicating nFW has started and is processing packets.
+   You should see output indicating nEdge Lite has started and is processing packets.
 
 2. **Generate some traffic:**
 
@@ -94,7 +94,7 @@ Step 4: Verify Operation
 Quick Setup (Bridge Mode)
 --------------------------
 
-Bridge mode allows nFW to inspect traffic transparently between two network segments.
+Bridge mode allows nEdge Lite to inspect traffic transparently between two network segments.
 
 Step 1: Set Up Bridge
 ~~~~~~~~~~~~~~~~~~~~~~
@@ -103,7 +103,7 @@ Run the bridge setup script:
 
 .. code-block:: console
 
-   sudo /usr/share/nfw/scripts/bridge_setup.sh eth0 eth1
+   sudo /usr/share/nedgelite/scripts/bridge_setup.sh eth0 eth1
 
 Replace ``eth0`` (LAN) and ``eth1`` (WAN) with your actual interface names.
 
@@ -114,16 +114,16 @@ Replace ``eth0`` (LAN) and ``eth1`` (WAN) with your actual interface names.
 - Configures iptables for bridge packet filtering
 - Routes packets to NFQUEUE for inspection
 
-Step 2: Start ntopng and nFW
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Step 2: Start ntopng and nEdge Lite
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. code-block:: console
 
    # Terminal 1: Start ntopng
    sudo ntopng -i tcp://127.0.0.1:1234c
 
-   # Terminal 2: Start nFW
-   sudo nfw -q 0 -z tcp://127.0.0.1:1234 -v
+   # Terminal 2: Start nEdge Lite
+   sudo nedgelite -q 0 -z tcp://127.0.0.1:1234 -v
 
 Step 3: Test Connectivity
 ~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -135,7 +135,7 @@ From a device on the LAN side, test internet connectivity:
    ping 8.8.8.8
    curl http://www.google.com
 
-Traffic should flow through the bridge and be inspected by nFW.
+Traffic should flow through the bridge and be inspected by nEdge Lite.
 
 Using Policy Files
 ------------------
@@ -145,7 +145,7 @@ Instead of relying on ntopng for policies, you can use a static JSON policy file
 Step 1: Create a Policy File
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Create ``/etc/nfw/policy.json``:
+Create ``/etc/nedgelite/policy.json``:
 
 .. code-block:: json
 
@@ -185,16 +185,16 @@ Create ``/etc/nfw/policy.json``:
 
 This policy blocks Facebook, YouTube, BitTorrent, and entire categories like Social Networks and Streaming.
 
-Step 2: Start nFW with Policy File
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Step 2: Start nEdge Lite with Policy File
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. code-block:: console
 
-   sudo nfw -q 0 -r /etc/nfw/policy.json -z tcp://127.0.0.1:1234 -v
+   sudo nedgelite -q 0 -r /etc/nedgelite/policy.json -z tcp://127.0.0.1:1234 -v
 
 **Command breakdown:**
 
-- ``-r /etc/nfw/policy.json``: Load policy rules from this file
+- ``-r /etc/nedgelite/policy.json``: Load policy rules from this file
 - Other options remain the same
 
 Step 3: Test Policy Enforcement
@@ -223,7 +223,7 @@ Step 3: Test Policy Enforcement
 Dynamic Policy Updates
 ----------------------
 
-For dynamic policy management, use ntopng to send policy updates to nFW.
+For dynamic policy management, use ntopng to send policy updates to nEdge Lite.
 
 Step 1: Start ntopng with ZMQ Publisher
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -237,12 +237,12 @@ Step 1: Start ntopng with ZMQ Publisher
 - ``-i tcp://127.0.0.1:5556c``: ZMQ collector for flows (note the ``c``)
 - ``--zmq-publish-events tcp://127.0.0.1:5557``: Publish policy events
 
-Step 2: Start nFW with Policy Collector
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Step 2: Start nEdge Lite with Policy Collector
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. code-block:: console
 
-   sudo nfw -q 0 -z tcp://127.0.0.1:5556 -p tcp://127.0.0.1:5557 -v
+   sudo nedgelite -q 0 -z tcp://127.0.0.1:5556 -p tcp://127.0.0.1:5557 -v
 
 **Parameters:**
 
@@ -255,7 +255,7 @@ Step 3: Configure Policies in ntopng
 1. Open ntopng web interface: http://localhost:3000
 2. Navigate to the Policies section
 3. Create or modify policies
-4. nFW will automatically receive and apply the updates
+4. nEdge Lite will automatically receive and apply the updates
 
 Reloading Policies
 ------------------
@@ -265,12 +265,12 @@ If using a static policy file (``-r`` option), you can reload the policy without
 .. code-block:: console
 
    # Find the PID
-   ps aux | grep nfw
+   ps aux | grep nedgelite
 
    # Send SIGHUP
    sudo kill -HUP <PID>
 
-nFW will reload the policy file and apply the new rules.
+nEdge Lite will reload the policy file and apply the new rules.
 
 If you are configuring policies via ntopng instead, they are automatically reloaded when changing the policy in ntopng.
 
@@ -353,7 +353,7 @@ Block Entire Continents
 Next Steps
 ----------
 
-Now that you have nFW running, explore these topics:
+Now that you have nEdge Lite running, explore these topics:
 
 - **Netfilter Setup**: Learn more about :doc:`netfilter_setup` for advanced configurations
 - **Configuration**: Explore all :doc:`configuration` options

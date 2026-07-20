@@ -1,19 +1,19 @@
 ntopng Integration
 ==================
 
-nFW is designed to work seamlessly with `ntopng <https://www.ntop.org/products/traffic-analysis/ntop/>`_, providing centralized monitoring, visualization, and policy management. This section explains how to set up and optimize the integration.
+nEdge Lite is designed to work seamlessly with `ntopng <https://www.ntop.org/products/traffic-analysis/ntop/>`_, providing centralized monitoring, visualization, and policy management. This section explains how to set up and optimize the integration.
 
 Overview
 --------
 
-The nFW-ntopng integration provides:
+The nEdge Lite-ntopng integration provides:
 
-- **Real-Time Flow Monitoring**: View all flows inspected by nFW in ntopng's web interface
+- **Real-Time Flow Monitoring**: View all flows inspected by nEdge Lite in ntopng's web interface
 - **Protocol Analytics**: See detailed statistics on detected protocols and applications
 - **Dynamic Policy Management**: Configure and update policies through ntopng's GUI
 - **Historical Data**: Store and query flow data over time
 - **Alerting**: Set up alerts for policy violations or suspicious traffic
-- **Multi-Instance Support**: Multiple nFW instances can report to a single ntopng
+- **Multi-Instance Support**: Multiple nEdge Lite instances can report to a single ntopng
 
 Integration Architecture
 ------------------------
@@ -21,15 +21,15 @@ Integration Architecture
 Communication Channels
 ~~~~~~~~~~~~~~~~~~~~~~
 
-nFW and ntopng communicate via two ZeroMQ channels:
+nEdge Lite and ntopng communicate via two ZeroMQ channels:
 
-1. **Flow Export Channel**: nFW sends flow data to ntopng (ZMQ PUB/SUB)
-2. **Policy Update Channel**: ntopng sends policy updates to nFW (ZMQ PUB/SUB)
+1. **Flow Export Channel**: nEdge Lite sends flow data to ntopng (ZMQ PUB/SUB)
+2. **Policy Update Channel**: ntopng sends policy updates to nEdge Lite (ZMQ PUB/SUB)
 
 .. code-block:: text
 
    ┌─────────┐                    ┌─────────┐
-   │   nFW   │──── Flows ────────>│  ntopng │
+   │   nEdge Lite   │──── Flows ────────>│  ntopng │
    │         │<─── Policies ──────│         │
    └─────────┘                    └─────────┘
 
@@ -37,7 +37,7 @@ ZeroMQ Endpoints
 ~~~~~~~~~~~~~~~~
 
 - **ntopng as Collector**: Endpoint URL must end with ``c`` (e.g., ``tcp://127.0.0.1:1234c``)
-- **nFW as Publisher**: Endpoint URL without ``c`` (e.g., ``tcp://127.0.0.1:1234``)
+- **nEdge Lite as Publisher**: Endpoint URL without ``c`` (e.g., ``tcp://127.0.0.1:1234``)
 
 Basic Setup
 -----------
@@ -45,7 +45,7 @@ Basic Setup
 Same-Host Deployment
 ~~~~~~~~~~~~~~~~~~~~
 
-When nFW and ntopng run on the same machine:
+When nEdge Lite and ntopng run on the same machine:
 
 **Start ntopng:**
 
@@ -53,20 +53,20 @@ When nFW and ntopng run on the same machine:
 
    sudo ntopng -i tcp://127.0.0.1:1234c
 
-**Start nFW:**
+**Start nEdge Lite:**
 
 .. code-block:: console
 
-   sudo nfw -q 0 -z tcp://127.0.0.1:1234
+   sudo nedgelite -q 0 -z tcp://127.0.0.1:1234
 
 **Access ntopng Web Interface:**
 
-Open http://localhost:3000 in your browser. You should see flows from nFW appearing in real-time.
+Open http://localhost:3000 in your browser. You should see flows from nEdge Lite appearing in real-time.
 
 Remote Deployment
 ~~~~~~~~~~~~~~~~~
 
-When nFW and ntopng run on different machines:
+When nEdge Lite and ntopng run on different machines:
 
 **On ntopng host (192.168.1.10):**
 
@@ -74,15 +74,15 @@ When nFW and ntopng run on different machines:
 
    sudo ntopng -i tcp://0.0.0.0:1234c
 
-**On nFW host:**
+**On nEdge Lite host:**
 
 .. code-block:: console
 
-   sudo nfw -q 0 -z tcp://192.168.1.10:1234
+   sudo nedgelite -q 0 -z tcp://192.168.1.10:1234
 
 **Firewall Configuration:**
 
-Ensure TCP port 1234 is accessible from the nFW host to ntopng host.
+Ensure TCP port 1234 is accessible from the nEdge Lite host to ntopng host.
 
 Dynamic Policy Management
 --------------------------
@@ -98,18 +98,18 @@ Setup with Policy Updates
 
    sudo ntopng -i tcp://0.0.0.0:5556c --zmq-publish-events tcp://0.0.0.0:5557
 
-**On nFW host:**
+**On nEdge Lite host:**
 
 .. code-block:: console
 
-   sudo nfw -q 0 -z tcp://ntopng-host:5556 -p tcp://ntopng-host:5557
+   sudo nedgelite -q 0 -z tcp://ntopng-host:5556 -p tcp://ntopng-host:5557
 
 **Configure Policies in ntopng:**
 
 1. Open ntopng web interface
 2. Navigate to **Settings** → **Policies**
 3. Create or modify policies
-4. Changes are automatically pushed to nFW
+4. Changes are automatically pushed to nEdge Lite
 
 Managing Policies via ntopng
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -135,13 +135,13 @@ Managing Policies via ntopng
 2. Look for the **Policy** column
 3. Flows show which policy was applied
 
-Multiple nFW Instances
------------------------
+Multiple nEdge Lite Instances
+-----------------------------
 
-Single ntopng, Multiple nFW Deployments
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Single ntopng, Multiple nEdge Lite Deployments
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Deploy nFW on multiple hosts, all reporting to one ntopng:
+Deploy nEdge Lite on multiple hosts, all reporting to one ntopng:
 
 **On ntopng host:**
 
@@ -149,25 +149,25 @@ Deploy nFW on multiple hosts, all reporting to one ntopng:
 
    sudo ntopng -i tcp://0.0.0.0:5556c --zmq-publish-events tcp://0.0.0.0:5557
 
-**On nFW host 1:**
+**On nEdge Lite host 1:**
 
 .. code-block:: console
 
-   sudo nfw -q 0 -z tcp://ntopng-host:5556 -p tcp://ntopng-host:5557
+   sudo nedgelite -q 0 -z tcp://ntopng-host:5556 -p tcp://ntopng-host:5557
 
-**On nFW host 2:**
-
-.. code-block:: console
-
-   sudo nfw -q 0 -z tcp://ntopng-host:5556 -p tcp://ntopng-host:5557
-
-**On nFW host 3:**
+**On nEdge Lite host 2:**
 
 .. code-block:: console
 
-   sudo nfw -q 0 -z tcp://ntopng-host:5556 -p tcp://ntopng-host:5557
+   sudo nedgelite -q 0 -z tcp://ntopng-host:5556 -p tcp://ntopng-host:5557
 
-All nFW instances will:
+**On nEdge Lite host 3:**
+
+.. code-block:: console
+
+   sudo nedgelite -q 0 -z tcp://ntopng-host:5556 -p tcp://ntopng-host:5557
+
+All nEdge Lite instances will:
 
 - Send flows to the same ntopng
 - Receive policy updates from the same ntopng
@@ -180,7 +180,7 @@ For redundancy, send flows to multiple ntopng instances:
 
 .. code-block:: console
 
-   sudo nfw -q 0 \
+   sudo nedgelite -q 0 \
      -z tcp://ntopng1:5556 \
      -z tcp://ntopng2:5556 \
      -p tcp://ntopng1:5557
@@ -215,16 +215,16 @@ Configure ntopng with Encryption
    sudo ntopng -i tcp://0.0.0.0:5556c \
      --zmq-encryption-key "Yne@$w-vo<fVvi]a<NY6T1ed:M$fCG*[IaLV{hID:D:)Q[IlAW!ahhC2ac:9*A}h:p?([4%wOTJ%JR%cs"
 
-Configure nFW with Encryption
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Configure nEdge Lite with Encryption
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. code-block:: console
 
-   sudo nfw -q 0 \
+   sudo nedgelite -q 0 \
      -z tcp://ntopng-host:5556 \
      -y "Yne@$w-vo<fVvi]a<NY6T1ed:M$fCG*[IaLV{hID"
 
-**Note**: nFW only needs the public key, ntopng needs both.
+**Note**: nEdge Lite only needs the public key, ntopng needs both.
 
 Flow Export Formats
 -------------------
@@ -236,7 +236,7 @@ Type-Length-Value format is compact and efficient:
 
 .. code-block:: console
 
-   sudo nfw -q 0 -z tcp://127.0.0.1:1234
+   sudo nedgelite -q 0 -z tcp://127.0.0.1:1234
 
 **Advantages**:
 
@@ -251,7 +251,7 @@ Human-readable JSON format for debugging:
 
 .. code-block:: console
 
-   sudo nfw -q 0 -z tcp://127.0.0.1:1234 -j
+   sudo nedgelite -q 0 -z tcp://127.0.0.1:1234 -j
 
 **Advantages**:
 
@@ -275,10 +275,10 @@ Adjust how often flows are updated:
 .. code-block:: console
 
    # Update every 10 seconds (more real-time)
-   sudo nfw -q 0 -z tcp://127.0.0.1:1234 -u 10
+   sudo nedgelite -q 0 -z tcp://127.0.0.1:1234 -u 10
 
    # Update every 60 seconds (less overhead)
-   sudo nfw -q 0 -z tcp://127.0.0.1:1234 -u 60
+   sudo nedgelite -q 0 -z tcp://127.0.0.1:1234 -u 60
 
 **Recommendations**:
 
@@ -293,7 +293,7 @@ Disable batching for lowest latency:
 
 .. code-block:: console
 
-   sudo nfw -q 0 -z tcp://127.0.0.1:1234 -f
+   sudo nedgelite -q 0 -z tcp://127.0.0.1:1234 -f
 
 **Use Cases**:
 
@@ -326,7 +326,7 @@ Verify Flow Export
    # On ntopng host
    sudo netstat -tnlp | grep 1234
 
-   # On nFW host
+   # On nEdge Lite host
    sudo netstat -tn | grep 1234
 
 View Flows in ntopng
@@ -349,16 +349,16 @@ No Flows Appearing in ntopng
 
       sudo netstat -tnlp | grep ntopng
 
-2. **Check nFW is running:**
+2. **Check nEdge Lite is running:**
 
    .. code-block:: console
 
-      ps aux | grep nfw
+      ps aux | grep nedgelite
 
 3. **Verify ZMQ endpoint configuration:**
 
    - ntopng endpoint must end with ``c``
-   - nFW endpoint must not have ``c``
+   - nEdge Lite endpoint must not have ``c``
 
 4. **Check firewall rules:**
 
@@ -370,7 +370,7 @@ No Flows Appearing in ntopng
 
    .. code-block:: console
 
-      sudo nfw -q 0 -z tcp://127.0.0.1:1234 -v
+      sudo nedgelite -q 0 -z tcp://127.0.0.1:1234 -v
 
 Policy Updates Not Working
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -379,7 +379,7 @@ Policy Updates Not Working
 
    .. code-block:: console
 
-      sudo nfw -q 0 -z tcp://127.0.0.1:5556 -p tcp://127.0.0.1:5557 -v
+      sudo nedgelite -q 0 -z tcp://127.0.0.1:5556 -p tcp://127.0.0.1:5557 -v
 
 2. **Check ntopng is publishing:**
 
@@ -387,13 +387,13 @@ Policy Updates Not Working
 
       sudo netstat -tnlp | grep 5557
 
-3. **Restart nFW after policy changes:**
+3. **Restart nEdge Lite after policy changes:**
 
    If using static files, send SIGHUP:
 
    .. code-block:: console
 
-      sudo kill -HUP $(pidof nfw)
+      sudo kill -HUP $(pidof nedgelite)
 
 High Latency or Packet Loss
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -402,13 +402,13 @@ High Latency or Packet Loss
 
    .. code-block:: console
 
-      sudo nfw -q 0 -z tcp://127.0.0.1:1234 -u 60
+      sudo nedgelite -q 0 -z tcp://127.0.0.1:1234 -u 60
 
 2. **Use multiple queues:**
 
    .. code-block:: console
 
-      sudo nfw -q 0:4 -z tcp://127.0.0.1:1234
+      sudo nedgelite -q 0:4 -z tcp://127.0.0.1:1234
 
 3. **Check network bandwidth:**
 
@@ -419,7 +419,7 @@ High Latency or Packet Loss
 Integration Best Practices
 ---------------------------
 
-1. **Co-locate when possible**: Run nFW and ntopng on the same host for lowest latency
+1. **Co-locate when possible**: Run nEdge Lite and ntopng on the same host for lowest latency
 2. **Use TLV format**: More efficient than JSON for production
 3. **Tune update interval**: Balance real-time visibility with performance
 4. **Enable encryption**: For remote deployments or sensitive environments

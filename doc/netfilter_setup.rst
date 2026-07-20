@@ -1,13 +1,13 @@
 Netfilter Setup
 ===============
 
-nFW relies on Linux netfilter (iptables) to intercept packets for inspection. This section explains how to configure netfilter for different deployment scenarios,
+nEdge Lite relies on Linux netfilter (iptables) to intercept packets for inspection. This section explains how to configure netfilter for different deployment scenarios,
 however reading this section is usually not required when using the provided scripts as explained in the Quick Start Guide section.
 
 Understanding NFQUEUE
 ---------------------
 
-NFQUEUE is a netfilter target that queues packets to userspace applications for processing. nFW uses NFQUEUE to:
+NFQUEUE is a netfilter target that queues packets to userspace applications for processing. nEdge Lite uses NFQUEUE to:
 
 1. Receive packets from the kernel
 2. Perform Deep Packet Inspection
@@ -17,9 +17,9 @@ NFQUEUE is a netfilter target that queues packets to userspace applications for 
 Key Concepts
 ~~~~~~~~~~~~
 
-**Queue ID**: Each NFQUEUE has a numeric ID (0-65535). nFW listens on specific queue IDs specified with the ``-q`` option.
+**Queue ID**: Each NFQUEUE has a numeric ID (0-65535). nEdge Lite listens on specific queue IDs specified with the ``-q`` option.
 
-**Connection Marking (CONNMARK)**: Instead of marking individual packets, nFW marks entire connections using conntrack. This ensures all packets in a connection follow the same policy.
+**Connection Marking (CONNMARK)**: Instead of marking individual packets, nEdge Lite marks entire connections using conntrack. This ensures all packets in a connection follow the same policy.
 
 **Mark Values**:
 
@@ -36,26 +36,26 @@ Key Concepts
 Setup Scripts
 -------------
 
-nFW includes setup scripts for common deployment scenarios.
+nEdge Lite includes setup scripts for common deployment scenarios.
 
 Single Interface Mode
 ~~~~~~~~~~~~~~~~~~~~~~
 
 Use this mode when protecting traffic on a single network interface (e.g., protecting local services or gateway traffic).
 
-**Script**: ``/usr/share/nfw/scripts/default_setup.sh``
+**Script**: ``/usr/share/nedgelite/scripts/default_setup.sh``
 
 **Usage**:
 
 .. code-block:: console
 
-   sudo /usr/share/nfw/scripts/default_setup.sh <interface>
+   sudo /usr/share/nedgelite/scripts/default_setup.sh <interface>
 
 **Example**:
 
 .. code-block:: console
 
-   sudo /usr/share/nfw/scripts/default_setup.sh eth0
+   sudo /usr/share/nedgelite/scripts/default_setup.sh eth0
 
 **What it does**:
 
@@ -83,19 +83,19 @@ Bridge Mode
 
 Use this mode for transparent inspection between two network segments (e.g., LAN and WAN).
 
-**Script**: ``/usr/share/nfw/scripts/bridge_setup.sh``
+**Script**: ``/usr/share/nedgelite/scripts/bridge_setup.sh``
 
 **Usage**:
 
 .. code-block:: console
 
-   sudo /usr/share/nfw/scripts/bridge_setup.sh <lan_interface> <wan_interface>
+   sudo /usr/share/nedgelite/scripts/bridge_setup.sh <lan_interface> <wan_interface>
 
 **Example**:
 
 .. code-block:: console
 
-   sudo /usr/share/nfw/scripts/bridge_setup.sh eth0 eth1
+   sudo /usr/share/nedgelite/scripts/bridge_setup.sh eth0 eth1
 
 **What it does**:
 
@@ -154,8 +154,8 @@ Basic Manual Setup
 
 - ``--restore-mark``: Copies conntrack mark to packet mark
 - ``--save-mark``: Copies packet mark back to conntrack
-- ``--queue-num 0``: Specifies NFQUEUE ID (must match nFW's ``-q`` option)
-- ``--queue-bypass``: If nFW is not running, packets pass through (optional, but recommended for testing)
+- ``--queue-num 0``: Specifies NFQUEUE ID (must match nEdge Lite's ``-q`` option)
+- ``--queue-bypass``: If nEdge Lite is not running, packets pass through (optional, but recommended for testing)
 
 Multiple Queue Configuration
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -170,11 +170,11 @@ For load balancing across CPU cores, use multiple queues:
    sudo iptables -t mangle -A PREROUTING -m mark --mark 0 -j NFQUEUE --queue-balance 0:3 --queue-cpu-fanout
    sudo iptables -t mangle -A POSTROUTING -j CONNMARK --save-mark
 
-Then start nFW with:
+Then start nEdge Lite with:
 
 .. code-block:: console
 
-   sudo nfw -q 0:4 -z tcp://127.0.0.1:1234
+   sudo nedgelite -q 0:4 -z tcp://127.0.0.1:1234
 
 **Options explained**:
 
@@ -203,7 +203,7 @@ Advanced Scenarios
 Router Mode
 ~~~~~~~~~~~
 
-When nFW runs on a router/gateway:
+When nEdge Lite runs on a router/gateway:
 
 .. code-block:: console
 
@@ -314,8 +314,8 @@ To remove all iptables rules:
 Troubleshooting
 ---------------
 
-Packets Not Reaching nFW
-~~~~~~~~~~~~~~~~~~~~~~~~~
+Packets Not Reaching nEdge Lite
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 1. **Check iptables rules**:
 
@@ -327,7 +327,7 @@ Packets Not Reaching nFW
 
 2. **Verify queue ID**:
 
-   Ensure iptables ``--queue-num`` matches nFW's ``-q`` option.
+   Ensure iptables ``--queue-num`` matches nEdge Lite's ``-q`` option.
 
 3. **Check conntrack**:
 
@@ -335,8 +335,8 @@ Packets Not Reaching nFW
 
       sudo conntrack -L | grep MARK
 
-nFW Not Starting
-~~~~~~~~~~~~~~~~
+nEdge Lite Not Starting
+~~~~~~~~~~~~~~~~~~~~~~~
 
 1. **Check if queue is already in use**:
 
@@ -357,7 +357,7 @@ Performance Issues
 
 2. **Check CPU affinity**:
 
-   Pin nFW threads to specific CPU cores.
+   Pin nEdge Lite threads to specific CPU cores.
 
 3. **Monitor queue depth**:
 
@@ -368,6 +368,6 @@ Performance Issues
 Next Steps
 ----------
 
-- Learn about all :doc:`configuration` options for nFW
+- Learn about all :doc:`configuration` options for nEdge Lite
 - Understand :doc:`policies` for traffic filtering
 - Explore :doc:`advanced` features
